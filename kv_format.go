@@ -53,6 +53,8 @@ func NewKeyEntry(entrySize uint32, entryPos uint32, timestamp uint32) KeyEntry {
 }
 
 func encodeHeader(timestamp uint32, keySize uint32, valueSize uint32) []byte {
+	// todo: make stuff like this more efficient? (do benchmarking too)
+	// https://stackoverflow.com/a/58776568
 	header := make([]byte, headerSize)
 	binary.BigEndian.PutUint32(header[0:], timestamp)
 	binary.BigEndian.PutUint32(header[headerSize/3:], keySize)
