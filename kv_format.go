@@ -13,6 +13,7 @@ import "encoding/binary"
 //
 // headerSize specifies the total header size. Our key-value pair, when stored on
 // disk looks like this:
+//
 //	┌───────────┬──────────┬────────────┬─────┬───────┐
 //	│ timestamp │ key_size │ value_size │ key │ value │
 //	└───────────┴──────────┴────────────┴─────┴───────┘
@@ -21,6 +22,7 @@ import "encoding/binary"
 // the row is variable, depending on the contents of the key and value.
 //
 // The first three fields form the header:
+//
 //	┌─────────────────────┬────────────────────┬──────────────────────┐
 //	│ timestamp (4 bytes) │ key_size (4 bytes) │ value_size (4 bytes) │
 //	└─────────────────────┴────────────────────┴──────────────────────┘
@@ -38,18 +40,22 @@ import "encoding/binary"
 const headerSize = 12
 
 // KeyEntry holds the key-value metadata, in the following format:
+//
 //	┌──────────────────────┬─────────────────────┬─────────────────────┐
-//	│ entry_size (4 bytes) │ entry_pos (4 bytes) │ timestamp (4 bytes) │
+//	│ entry_size (8 bytes) │ entry_pos (8 bytes) │ timestamp (4 bytes) │
 //	└──────────────────────┴─────────────────────┴─────────────────────┘
 //
 // Whenever we insert/update a key, we create a new KeyEntry object and
 // insert that into `keyDir`, which is a hash table that maps every key to
 // the above fixed-size metadata.
 type KeyEntry struct {
+	entrySize uint
+	entryPos  int64
+	timestamp uint32
 }
 
-func NewKeyEntry(entrySize uint32, entryPos uint32, timestamp uint32) KeyEntry {
-	panic("implement me")
+func NewKeyEntry(entrySize uint, entryPos int64, timestamp uint32) KeyEntry {
+	return KeyEntry{entrySize, entryPos, timestamp}
 }
 
 func encodeHeader(timestamp uint32, keySize uint32, valueSize uint32) []byte {
@@ -101,4 +107,10 @@ func decodeKV(data []byte) (uint32, string, string) {
 	value := string(data[valueOffset:])
 
 	return timestamp, key, value
+}
+
+func decodeKVNoHeader(data []byte, keySize uint32) (string, string) {
+	key := string(data[:keySize])
+	value := string(data[keySize:])
+	return key, value
 }
