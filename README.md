@@ -1,6 +1,6 @@
-# Bitcask-go
+# Bitcask-go-lite
 
-Bitcask-go is a (simpler) implementation of [Riak's Bitcask](https://riak.com/assets/bitcask-intro.pdf), written in Go.
+Bitcask-go-lite is a (simpler) implementation of [Riak's Bitcask](https://riak.com/assets/bitcask-intro.pdf), written in Go.
 
 It is an embedded and persistent key-value store that uses a log-structured hash table.
 

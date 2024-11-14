@@ -1,4 +1,4 @@
-package bitcaskgo
+package bitcaskgolite
 
 import (
 	"errors"
